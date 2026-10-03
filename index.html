@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sairaj Shetiya | Karyakarta</title>
+  
+  <!-- Fonts: Plus Jakarta Sans & Outfit for Canva-like editorial look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti for festive motion celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Outfit"', 'sans-serif'],
+          },
+          colors: {
+            saffron: {
+              50: '#fff8f0',
+              100: '#ffeedd',
+              200: '#ffdcb8',
+              300: '#ffbf85',
+              400: '#ff9847',
+              500: '#ff7714',
+              600: '#f55705',
+              700: '#c83f05',
+              800: '#9e320d',
+              900: '#7e2b0e',
+            },
+            lotus: {
+              light: '#FFA726',
+              main: '#FF6F00',
+              deep: '#E65100',
+              leaf: '#1B5E20',
+              leafLight: '#2E7D32'
+            }
+          },
+          boxShadow: {
+            'canva': '0 20px 40px -15px rgba(255, 111, 0, 0.12), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'canva-hover': '0 28px 50px -12px rgba(255, 111, 0, 0.22), 0 0 1px 1px rgba(0,0,0,0.06)',
+            'glow': '0 0 35px rgba(255, 111, 0, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Canva Background Mesh Gradient */
+    .mesh-gradient {
+      background-color: #fffaf5;
+      background-image: 
+        radial-gradient(at 10% 15%, rgba(255, 153, 51, 0.18) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(255, 111, 0, 0.14) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(255, 237, 213, 0.5) 0px, transparent 65%),
+        radial-gradient(at 80% 85%, rgba(46, 125, 50, 0.08) 0px, transparent 50%),
+        radial-gradient(at 15% 85%, rgba(255, 152, 0, 0.15) 0px, transparent 50%);
+    }
+
+    /* Glassmorphism Card Style */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .glass-dark {
+      background: rgba(18, 18, 20, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Shaking animation on wrong password */
+    @keyframes errorShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+    .shake-error {
+      animation: errorShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* Precise Lotus Petal Blooming Transforms */
+    .petal-center {
+      transform-origin: 150px 185px;
+      transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .petal-inner-left {
+      transform-origin: 150px 185px;
+      transition: all 1.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+    }
+    .petal-inner-right {
+      transform-origin: 150px 185px;
+      transition: all 1.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+    }
+    .petal-outer-left {
+      transform-origin: 150px 185px;
+      transition: all 2.1s cubic-bezier(0.16, 1, 0.3, 1) 0.22s;
+    }
+    .petal-outer-right {
+      transform-origin: 150px 185px;
+      transition: all 2.1s cubic-bezier(0.16, 1, 0.3, 1) 0.22s;
+    }
+    .petal-far-left {
+      transform-origin: 150px 185px;
+      transition: all 2.3s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+    }
+    .petal-far-right {
+      transform-origin: 150px 185px;
+      transition: all 2.3s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+    }
+    .lotus-base {
+      transform-origin: 150px 185px;
+      transition: all 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+    }
+
+    /* Unbloomed / Closed State */
+    .lotus-closed .petal-center {
+      transform: scale(0.3) translateY(35px);
+      opacity: 0.2;
+    }
+    .lotus-closed .petal-inner-left {
+      transform: scale(0.2) rotate(35deg) translateY(30px);
+      opacity: 0;
+    }
+    .lotus-closed .petal-inner-right {
+      transform: scale(0.2) rotate(-35deg) translateY(30px);
+      opacity: 0;
+    }
+    .lotus-closed .petal-outer-left {
+      transform: scale(0.15) rotate(55deg) translateY(40px);
+      opacity: 0;
+    }
+    .lotus-closed .petal-outer-right {
+      transform: scale(0.15) rotate(-55deg) translateY(40px);
+      opacity: 0;
+    }
+    .lotus-closed .petal-far-left {
+      transform: scale(0.1) rotate(70deg) translateY(40px);
+      opacity: 0;
+    }
+    .lotus-closed .petal-far-right {
+      transform: scale(0.1) rotate(-70deg) translateY(40px);
+      opacity: 0;
+    }
+    .lotus-closed .lotus-base {
+      transform: scale(0.2);
+      opacity: 0;
+    }
+
+    /* Emerged Text Fade & Rise */
+    .emerge-text {
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+      transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1), transform 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .emerge-text.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Subtle pulsing aura for glowing lotus */
+    @keyframes auraPulse {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 111, 0, 0.35)); }
+      50% { filter: drop-shadow(0 0 35px rgba(255, 152, 0, 0.65)); }
+    }
+    .aura-glow {
+      animation: auraPulse 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="mesh-gradient min-h-screen text-slate-800 font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- 1. SECURITY GATE / QUESTION MODAL OVERLAY -->
+  <div id="gateOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-opacity duration-700">
+    <div id="gateCard" class="glass-card w-full max-w-md p-8 rounded-3xl shadow-2xl relative overflow-hidden border border-white/60">
+      
+      <!-- Top Decorative Accent Ribbon -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full blur-2xl opacity-40"></div>
+      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-tr from-emerald-500 to-amber-300 rounded-full blur-2xl opacity-30"></div>
+
+      <!-- Header with lock icon badge -->
+      <div class="relative z-10 text-center mb-6">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 mb-4 shadow-inner ring-4 ring-orange-50">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <span class="inline-block px-3 py-1 text-xs font-bold tracking-wider text-orange-700 bg-orange-100/80 rounded-full uppercase mb-2">Canva Studio Access</span>
+        <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 tracking-tight">Access Verification</h2>
+        <p class="text-slate-600 mt-2 text-sm sm:text-base font-medium">Answer to enter the karyakarta headquarters:</p>
+      </div>
+
+      <!-- Question Box -->
+      <div class="relative z-10 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200/80 rounded-2xl p-4 text-center mb-6">
+        <p class="text-xs uppercase font-bold text-orange-800/80 tracking-widest mb-1">Mandatory Question</p>
+        <p class="text-lg sm:text-xl font-display font-bold text-slate-900">Which Party is GOATED?</p>
+      </div>
+
+      <!-- Form -->
+      <form id="gateForm" class="relative z-10 space-y-4" onsubmit="handleVerification(event)">
+        <div>
+          <label for="answerInput" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Your Answer</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="answerInput" 
+              autocomplete="off"
+              placeholder="Enter party abbreviation..." 
+              class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-slate-900 font-semibold tracking-wide placeholder-slate-400 bg-white/90 shadow-sm transition"
+              required
+            />
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+              <span class="text-xs font-bold bg-slate-100 px-2 py-1 rounded-md text-slate-500">Press ↵</span>
+            </div>
+          </div>
+          <p id="errorMessage" class="text-xs text-rose-600 font-semibold mt-2 hidden flex items-center gap-1.5">
+            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Incorrect answer! Hint: 3 letters.
+          </p>
+        </div>
+
+        <button 
+          type="submit" 
+          id="submitGateBtn"
+          class="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 shadow-lg shadow-orange-500/25 transform active:scale-[0.98] transition flex items-center justify-center gap-2 group cursor-pointer"
+        >
+          <span>Unlock Experience</span>
+          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="mt-5 text-center">
+        <p class="text-[11px] text-slate-400 font-medium">Session memory protected • Closes automatically upon refresh</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CANVA-STYLE LANDING PAGE WRAPPER -->
+  <div id="mainApp" class="relative z-10 flex flex-col min-h-screen opacity-0 transition-opacity duration-1000 pointer-events-none">
+    
+    <!-- Top Navigation Bar -->
+    <header class="w-full px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20 font-bold">
+          <svg class="w-6 h-6" viewBox="0 0 300 240" fill="currentColor">
+            <path d="M150,55 C165,110 185,155 150,200 C115,155 135,110 150,55 Z" />
+            <path d="M150,110 C185,130 200,165 170,200 C145,175 140,140 150,110 Z" />
+            <path d="M150,110 C115,130 100,165 130,200 C155,175 160,140 150,110 Z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-base font-display font-black text-slate-900 tracking-tight">KARYAKARTA</span>
+          <span class="block text-[10px] font-bold text-orange-600 uppercase tracking-widest -mt-1">Official Portal</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Verified Member Access
+        </span>
+        <button 
+          onclick="openCameraModal()"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Add Yourself
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main class="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-6 pb-16 max-w-6xl mx-auto w-full">
+      
+      <!-- Canva Badge Tag -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100/80 border border-orange-200 text-orange-800 text-xs sm:text-sm font-bold shadow-sm mb-6">
+        <span class="text-orange-500">✦</span>
+        <span>Nation First, Always • Rashtra Pratham</span>
+        <span class="text-orange-500">✦</span>
+      </div>
+
+      <!-- LOTUS BLOOMING STAGE (SVG 60 FPS MOTION GRAPHICS) -->
+      <div class="relative w-full max-w-md sm:max-w-lg aspect-square flex items-center justify-center -my-2 sm:my-0">
+        <!-- Radial Backlight Glow -->
+        <div id="bloomGlow" class="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-rose-500 blur-3xl opacity-20 pointer-events-none transition-all duration-1000 scale-50"></div>
+
+        <!-- Lotus Flower Blooming SVG -->
+        <div id="lotusContainer" class="lotus-closed aura-glow relative z-10 w-72 h-72 sm:w-96 sm:h-96">
+          <svg 
+            id="lotusSvg" 
+            class="w-full h-full filter drop-shadow-xl" 
+            viewBox="0 0 300 240" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <!-- Saffron Petal Gradients -->
+              <linearGradient id="saffronCenter" x1="150" y1="30" x2="150" y2="200" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFA726" />
+                <stop offset="45%" stop-color="#FF6F00" />
+                <stop offset="100%" stop-color="#D84315" />
+              </linearGradient>
+
+              <linearGradient id="saffronWingLeft" x1="110" y1="60" x2="150" y2="190" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFB74D" />
+                <stop offset="60%" stop-color="#FF7043" />
+                <stop offset="100%" stop-color="#C62828" />
+              </linearGradient>
+
+              <linearGradient id="saffronWingRight" x1="190" y1="60" x2="150" y2="190" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFB74D" />
+                <stop offset="60%" stop-color="#FF7043" />
+                <stop offset="100%" stop-color="#C62828" />
+              </linearGradient>
+
+              <linearGradient id="leafGrad" x1="150" y1="180" x2="150" y2="230" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#2E7D32" />
+                <stop offset="100%" stop-color="#0E3D12" />
+              </linearGradient>
+            </defs>
+
+            <!-- Base Emerald Leaves / Pedestal -->
+            <g class="lotus-base">
+              <!-- Lower green leaf support -->
+              <path d="M70,195 C110,215 190,215 230,195 C200,225 100,225 70,195 Z" fill="url(#leafGrad)" stroke="#1B5E20" stroke-width="2" />
+              <path d="M100,192 C130,202 170,202 200,192 C180,210 120,210 100,192 Z" fill="#1B5E20" />
+            </g>
+
+            <!-- Outer Far Petals (Wings) -->
+            <path class="petal-far-left" d="M150,185 C80,175 25,145 35,115 C55,90 105,120 150,185 Z" fill="url(#saffronWingLeft)" stroke="#E65100" stroke-width="1.8" />
+            <path class="petal-far-right" d="M150,185 C220,175 275,145 265,115 C245,90 195,120 150,185 Z" fill="url(#saffronWingRight)" stroke="#E65100" stroke-width="1.8" />
+
+            <!-- Outer Mid Petals -->
+            <path class="petal-outer-left" d="M150,185 C100,165 55,115 75,75 C98,60 135,110 150,185 Z" fill="url(#saffronWingLeft)" stroke="#E65100" stroke-width="1.8" />
+            <path class="petal-outer-right" d="M150,185 C200,165 245,115 225,75 C202,60 165,110 150,185 Z" fill="url(#saffronWingRight)" stroke="#E65100" stroke-width="1.8" />
+
+            <!-- Inner Mid Petals -->
+            <path class="petal-inner-left" d="M150,185 C120,150 90,95 115,50 C135,40 148,95 150,185 Z" fill="url(#saffronWingLeft)" stroke="#E65100" stroke-width="1.8" />
+            <path class="petal-inner-right" d="M150,185 C180,150 210,95 185,50 C165,40 152,95 150,185 Z" fill="url(#saffronWingRight)" stroke="#E65100" stroke-width="1.8" />
+
+            <!-- Sovereign Center Petal (Core) -->
+            <path class="petal-center" d="M150,30 C168,80 185,135 150,190 C115,135 132,80 150,30 Z" fill="url(#saffronCenter)" stroke="#BF360C" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- EMERGING TEXT: SAIRAJ SHETIYA + KARYAKARTA -->
+      <div id="heroTextGroup" class="emerge-text text-center mt-2 relative z-20">
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-tight text-slate-900 leading-none">
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700">
+            SAIRAJ SHETIYA
+          </span>
+        </h1>
+        <div class="flex items-center justify-center gap-3 mt-3">
+          <div class="h-[2px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-orange-500"></div>
+          <p class="text-xs sm:text-base font-bold uppercase tracking-[0.35em] text-slate-600">
+            K A R Y A K A R T A
+          </p>
+          <div class="h-[2px] w-10 sm:w-16 bg-gradient-to-l from-transparent to-orange-500"></div>
+        </div>
+        <p class="max-w-xl mx-auto mt-4 text-slate-600 text-sm sm:text-base font-medium">
+          Committed to public service, community empowerment, and visionary leadership for a stronger tomorrow.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <button 
+            onclick="openCameraModal()"
+            class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition duration-200 cursor-pointer flex items-center gap-2.5"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Add Yourself</span>
+          </button>
+          
+          <a 
+            href="#badgeSection"
+            class="px-6 py-3.5 rounded-2xl glass-card text-slate-800 font-bold text-sm sm:text-base border border-slate-200 hover:border-orange-300 hover:bg-white shadow-sm transition duration-200 flex items-center gap-2"
+          >
+            <span>View Digital ID Badge</span>
+            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 2. DIGITAL BADGE & USER ENGAGEMENT SECTION -->
+    <section id="badgeSection" class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-orange-100/60">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-orange-600 bg-orange-100/80 px-3 py-1 rounded-full">Interactive Identity</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3">Digital Karyakarta Badge</h2>
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
+          Capture your picture to generate your personalized karyakarta credentials alongside Sairaj Shetiya.
+        </p>
+      </div>
+
+      <!-- Badge Showcase Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: Digital ID Card Preview (Canva Card Style) -->
+        <div class="lg:col-span-7 flex justify-center">
+          <div id="karyakartaCard" class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 shadow-canva border-2 border-orange-200/80 relative overflow-hidden transition-all duration-300 hover:shadow-canva-hover">
+            
+            <!-- Watermark Lotus in Background -->
+            <div class="absolute -right-10 -bottom-10 w-52 h-52 opacity-10 pointer-events-none text-orange-600">
+              <svg viewBox="0 0 300 240" fill="currentColor">
+                <path d="M150,30 C168,80 185,135 150,190 C115,135 132,80 150,30 Z"/>
+                <path d="M150,185 C120,150 90,95 115,50 C135,40 148,95 150,185 Z"/>
+                <path d="M150,185 C180,150 210,95 185,50 C165,40 152,95 150,185 Z"/>
+              </svg>
+            </div>
+
+            <!-- Card Header -->
+            <div class="flex items-center justify-between border-b border-orange-100 pb-4 mb-6">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center font-black text-sm">
+                  SS
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">National Member Identity</h4>
+                  <p class="text-[10px] text-orange-600 font-semibold">Bharatiya Janata Party</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-bold bg-orange-50 text-orange-700 px-2.5 py-1 rounded-md border border-orange-200">
+                #GOAT-2026
+              </span>
+            </div>
+
+            <!-- Card Body: User Photo + Lotus + Sairaj Shetiya Typography -->
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+              
+              <!-- Avatar Slot -->
+              <div class="relative group">
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-tr from-orange-100 to-amber-100 border-2 border-orange-400 p-1 shadow-md flex items-center justify-center">
+                  <img 
+                    id="userBadgePhoto" 
+                    src="https://placehold.co/240x240/ffeedd/ff7714?text=Click+'Add+Yourself'" 
+                    alt="Karyakarta Photo" 
+                    class="w-full h-full object-cover rounded-xl"
+                  />
+                </div>
+                <!-- Badge corner icon -->
+                <div class="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow text-xs">
+                  ✓
+                </div>
+              </div>
+
+              <!-- Information Details -->
+              <div class="text-center sm:text-left flex-1">
+                <span class="inline-block text-[11px] font-extrabold uppercase px-2.5 py-0.5 bg-orange-500 text-white rounded-md mb-1.5 tracking-wide">
+                  Active Karyakarta
+                </span>
+                <h3 id="badgeDisplayName" class="text-xl font-display font-extrabold text-slate-900">
+                  You + Sairaj Shetiya
+                </h3>
+                <p class="text-xs text-slate-500 font-medium mt-1">
+                  Associated Leader: <span class="font-bold text-orange-700">Sairaj Shetiya</span>
+                </p>
+                <div class="mt-3 flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-slate-700">
+                  <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                  <span>Motto: Nation First</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Footer Badge details -->
+            <div class="mt-6 pt-4 border-t border-orange-100 flex items-center justify-between text-[11px] text-slate-500">
+              <span id="badgeTimestamp">Registered: Active Session</span>
+              <span class="font-bold text-slate-700">Status: Verified GOAT</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Actions & Highlights -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="glass-card p-6 rounded-3xl border border-white/80 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold mb-3">
+              📷
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Instant Camera Integration</h3>
+            <p class="text-slate-600 text-sm mt-1">
+              Click the button below to turn on your front camera, take a snap, and automatically personalize the Karyakarta digital credentials.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button 
+                onclick="openCameraModal()"
+                class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-600/20 transition cursor-pointer flex items-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+                Open Camera / Take Photo
+              </button>
+              <button 
+                id="saveCardBtn"
+                onclick="downloadBadgeCard()"
+                class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5"
+              >
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Save Badge
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-3xl border border-white/80 shadow-sm flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg flex-shrink-0">
+              🛡️
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900">Zero Persistent Storage</h4>
+              <p class="text-xs text-slate-500 mt-1">
+                For complete privacy, camera snapshots and unlocked states exist purely in local browser volatile memory. Closing or refreshing this tab wipes all session data instantly.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 text-center text-xs text-slate-500 border-t border-orange-100/80">
+      <p class="font-medium">© 2026 Sairaj Shetiya • Dedicated Karyakarta • Designed in Canva Aesthetic</p>
+      <p class="text-[11px] text-slate-400 mt-1">Single-session ephemeral architecture.</p>
+    </footer>
+
+  </div>
+
+  <!-- 3. INTERACTIVE CAMERA CAPTURE MODAL -->
+  <div id="cameraModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-card w-full max-w-lg p-6 rounded-3xl shadow-2xl relative border border-white/80">
+      
+      <!-- Close button -->
+      <button 
+        onclick="closeCameraModal()"
+        class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100 transition cursor-pointer"
+        aria-label="Close Modal"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-xl font-display font-bold text-slate-900">Capture Karyakarta Snapshot</h3>
+        <p class="text-xs text-slate-500">Take a live photo to embed your face in the official Sairaj Shetiya badge.</p>
+      </div>
+
+      <!-- Live Video Viewport / Canvas Capture -->
+      <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden flex items-center justify-center border-2 border-orange-200 shadow-inner">
+        <video id="cameraVideo" autoplay playsinline muted class="w-full h-full object-cover transform -scale-x-100"></video>
+        <canvas id="photoCanvas" class="hidden"></canvas>
+
+        <!-- Camera Status / Fallback Notice -->
+        <div id="cameraStatusText" class="absolute text-center p-4 text-slate-400 text-xs hidden">
+          Initializing Camera... Please allow webcam access.
+        </div>
+      </div>
+
+      <!-- Optional Name Input -->
+      <div class="mt-4">
+        <label for="userNameInput" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Your Full Name (Optional)</label>
+        <input 
+          type="text" 
+          id="userNameInput" 
+          placeholder="e.g. Rahul Sharma" 
+          class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+        />
+      </div>
+
+      <!-- Fallback File Upload (if camera blocked) -->
+      <div id="fallbackUpload" class="mt-3">
+        <label class="block text-[11px] text-slate-500 font-medium mb-1">Or choose photo from device:</label>
+        <input 
+          type="file" 
+          id="fileUploadInput" 
+          accept="image/*"
+          onchange="handleFileUpload(event)"
+          class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
+        />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-6 flex items-center justify-end gap-3">
+        <button 
+          onclick="closeCameraModal()"
+          class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          id="snapBtn"
+          onclick="capturePhoto()"
+          class="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-md shadow-orange-600/30 flex items-center gap-2 cursor-pointer transition"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+          Capture & Apply
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State is purely in volatile memory. No localStorage / sessionStorage is used.
+    let isUnlocked = false;
+    let cameraStream = null;
+
+    /**
+     * 1. Password Verification Handler
+     * Question: "Which Party is GOATED?"
+     * Expected answer: "BJP" (case-insensitive)
+     */
+    function handleVerification(event) {
+      if (event) event.preventDefault();
+      
+      const inputEl = document.getElementById('answerInput');
+      const errorEl = document.getElementById('errorMessage');
+      const gateCard = document.getElementById('gateCard');
+      const userAnswer = (inputEl.value || '').trim().toUpperCase();
+
+      if (userAnswer === 'BJP') {
+        // Correct answer!
+        isUnlocked = true;
+        errorEl.classList.add('hidden');
+        
+        // Hide Gate Overlay smoothly
+        const gateOverlay = document.getElementById('gateOverlay');
+        gateOverlay.classList.add('opacity-0');
+        setTimeout(() => {
+          gateOverlay.classList.add('hidden');
+        }, 700);
+
+        // Reveal Main Page
+        const mainApp = document.getElementById('mainApp');
+        mainApp.classList.remove('pointer-events-none');
+        mainApp.classList.remove('opacity-0');
+        mainApp.classList.add('opacity-100');
+
+        // Trigger cinematic bloom motion graphics
+        triggerBloomSequence();
+
+        // Celebration Confetti
+        try {
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#FF9933', '#FFFFFF', '#128807', '#FF6F00']
+          });
+        } catch (e) {
+          console.log('Confetti trigger', e);
+        }
+      } else {
+        // Wrong Answer
+        errorEl.classList.remove('hidden');
+        gateCard.classList.remove('shake-error');
+        // Force reflow for repeat animation
+        void gateCard.offsetWidth;
+        gateCard.classList.add('shake-error');
+        inputEl.focus();
+        inputEl.select();
+      }
+    }
+
+    /**
+     * 2. Lotus Blossom Motion Graphics & Text Emergence Sequence
+     */
+    function triggerBloomSequence() {
+      const lotusContainer = document.getElementById('lotusContainer');
+      const bloomGlow = document.getElementById('bloomGlow');
+      const heroTextGroup = document.getElementById('heroTextGroup');
+
+      // 60FPS Lotus Blossom opening via CSS transition
+      requestAnimationFrame(() => {
+        // Expand glow
+        bloomGlow.classList.remove('scale-50', 'opacity-20');
+        bloomGlow.classList.add('scale-110', 'opacity-40');
+
+        // Unfold petals smoothly
+        lotusContainer.classList.remove('lotus-closed');
+
+        // After lotus petals bloom, emerge Sairaj Shetiya + Karyakarta text
+        setTimeout(() => {
+          heroTextGroup.classList.add('show');
+        }, 850);
+      });
+    }
+
+    /**
+     * 3. Camera Modal Functions
+     */
+    async function openCameraModal() {
+      const modal = document.getElementById('cameraModal');
+      const video = document.getElementById('cameraVideo');
+      const statusText = document.getElementById('cameraStatusText');
+
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        modal.classList.remove('opacity-0');
+        modal.classList.add('opacity-100');
+      });
+
+      // Request WebRTC Media Stream
+      try {
+        statusText.classList.remove('hidden');
+        statusText.textContent = "Connecting to your camera...";
+        
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false
+        });
+
+        video.srcObject = cameraStream;
+        await video.play();
+        statusText.classList.add('hidden');
+      } catch (err) {
+        console.warn('Camera access denied or unavailable:', err);
+        statusText.classList.remove('hidden');
+        statusText.innerHTML = "Camera permission not granted or device unavailable.<br>You can still upload a photo below!";
+      }
+    }
+
+    function closeCameraModal() {
+      const modal = document.getElementById('cameraModal');
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        stopCameraStream();
+      }, 300);
+    }
+
+    function stopCameraStream() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      const video = document.getElementById('cameraVideo');
+      if (video) video.srcObject = null;
+    }
+
+    /**
+     * 4. Capture & Inject User Photo into Karyakarta Badge
+     */
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('photoCanvas');
+      const userBadgePhoto = document.getElementById('userBadgePhoto');
+      const nameInput = document.getElementById('userNameInput');
+      const badgeDisplayName = document.getElementById('badgeDisplayName');
+
+      if (cameraStream && video.videoWidth) {
+        // Draw frame onto hidden canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        
+        // Flip horizontally to match mirror preview
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const photoDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        userBadgePhoto.src = photoDataUrl;
+      }
+
+      // Update name if provided
+      const customName = (nameInput.value || '').trim();
+      if (customName) {
+        badgeDisplayName.textContent = customName;
+      } else {
+        badgeDisplayName.textContent = 'Karyakarta Member';
+      }
+
+      // Update timestamp
+      const now = new Date();
+      document.getElementById('badgeTimestamp').textContent = `Verified: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+      // Close modal
+      closeCameraModal();
+
+      // Scroll smoothly to badge
+      const badgeSection = document.getElementById('badgeSection');
+      badgeSection.scrollIntoView({ behavior: 'smooth' });
+
+      // Celebration burst
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 },
+          colors: ['#FF9933', '#138808', '#FFFFFF']
+        });
+      } catch (e) {}
+    }
+
+    /**
+     * 5. Fallback File Upload Handler
+     */
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const userBadgePhoto = document.getElementById('userBadgePhoto');
+          userBadgePhoto.src = e.target.result;
+          
+          const nameInput = document.getElementById('userNameInput');
+          const badgeDisplayName = document.getElementById('badgeDisplayName');
+          if (nameInput.value.trim()) {
+            badgeDisplayName.textContent = nameInput.value.trim();
+          }
+          closeCameraModal();
+          document.getElementById('badgeSection').scrollIntoView({ behavior: 'smooth' });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    /**
+     * 6. Download / Save Badge Card feedback
+     */
+    function downloadBadgeCard() {
+      // Create a subtle visual confirmation toast inside the card
+      const card = document.getElementById('karyakartaCard');
+      const toast = document.createElement('div');
+      toast.className = 'absolute inset-0 bg-slate-900/90 text-white flex flex-col items-center justify-center p-4 rounded-3xl z-30 transition-opacity duration-300';
+      toast.innerHTML = `
+        <div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xl mb-2 font-bold">✓</div>
+        <p class="font-display font-bold text-lg">Badge Verified & Ready!</p>
+        <p class="text-xs text-slate-300 text-center mt-1">Take a screenshot to save your karyakarta credentials.</p>
+        <button onclick="this.parentElement.remove()" class="mt-4 px-4 py-1.5 bg-orange-500 hover:bg-orange-600 rounded-lg text-xs font-bold cursor-pointer">Done</button>
+      `;
+      card.appendChild(toast);
+    }
+
+    // Auto-focus input on page ready
+    window.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('answerInput');
+      if (input) input.focus();
+    });
+  </script>
+</body>
+</html>
